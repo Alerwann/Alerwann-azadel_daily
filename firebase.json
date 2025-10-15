@@ -1,1 +1,44 @@
-{"flutter":{"platforms":{"android":{"default":{"projectId":"azadel-diary","appId":"1:407302523761:android:781a2145c92b2cbec304d0","fileOutput":"android/app/google-services.json"}},"ios":{"default":{"projectId":"azadel-diary","appId":"1:407302523761:ios:9957fd5d1ba7522ec304d0","uploadDebugSymbols":false,"fileOutput":"ios/Runner/GoogleService-Info.plist"}},"dart":{"lib/firebase_options.dart":{"projectId":"azadel-diary","configurations":{"android":"1:407302523761:android:781a2145c92b2cbec304d0","ios":"1:407302523761:ios:9957fd5d1ba7522ec304d0"}}}}}}
+{
+  "flutter": {
+    "platforms": {
+      "android": {
+        "default": {
+          "projectId": "azadel-diary",
+          "appId": "1:407302523761:android:781a2145c92b2cbec304d0",
+          "fileOutput": "android/app/google-services.json"
+        }
+      },
+      "ios": {
+        "default": {
+          "projectId": "azadel-diary",
+          "appId": "1:407302523761:ios:9957fd5d1ba7522ec304d0",
+          "uploadDebugSymbols": false,
+          "fileOutput": "ios/Runner/GoogleService-Info.plist"
+        }
+      },
+      "dart": {
+        "lib/firebase_options.dart": {
+          "projectId": "azadel-diary",
+          "configurations": {
+            "android": "1:407302523761:android:781a2145c92b2cbec304d0",
+            "ios": "1:407302523761:ios:9957fd5d1ba7522ec304d0"
+          }
+        }
+      }
+    }
+  },
+  "functions": [
+    {
+      "codebase": "default",
+      "ignore": [
+        "node_modules",
+        ".git",
+        "firebase-debug.log",
+        "firebase-debug.*.log",
+        "*.local"
+      ],
+      "source": "functions"
+    }
+
+  ]
+}

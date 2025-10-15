@@ -1,4 +1,6 @@
+import 'package:azadel_daily/models/menu_model.dart';
 import 'package:azadel_daily/pages/daily_message.dart';
+
 import 'package:azadel_daily/pages/meeting_alerwann.dart';
 import 'package:azadel_daily/pages/meeting_azadel.dart';
 import 'package:azadel_daily/pages/week_menu.dart';
@@ -79,80 +81,122 @@ class _DailyMessageAzadelState extends State<DailyMessageAzadel> {
           appBar: AppBar(
             title: Text('❤️ 😈 ❤️', style: TextStyle(fontSize: 40)),
           ),
-          body: SingleChildScrollView(
-            child: Padding(
-              padding: EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                spacing: 30,
-                children: [
-                  Container(
-                    margin: EdgeInsets.only(top: 50, bottom: 30),
-                    child: CustomText.center(
-                      " Coucou mon coeur ",
-                      Theme.of(context).textTheme.headlineMedium,
-                    ),
-                  ),
+          body: Consumer<MenuProvider>(
+            builder: (context, menuP, child) {
 
-                  ElevatedButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => DailyMessage()),
-                      );
-                    },
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text("Message du jour"),
-                        SizedBox(width: 15),
-                        Icon(
-                          Icons.favorite,
-                          size: 50,
-                          color: getColor(selectedColor),
-                        ),
-                      ],
-                    ),
-                  ),
-                  ElevatedButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => MeetingAzadel(),
-                        ),
-                      );
-                    },
-                    child: Text(
-                      "Rendez-vous de la semaine de bébé d'amour",
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
+                   MenuDuJour? menuDuJour = menuP.menuPourAujourdhui();
+              if (menuDuJour == null) {
+                return Center(child: Text("Aucun menu pour aujourd'hui"));
+              }
 
-                  ElevatedButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => RdvAlerwann()),
-                      );
-                    },
-                    child: Text(
-                      "Rendez-vous de la semaine de bébé d'ange",
-                      textAlign: TextAlign.center,
-                    ),
+              return SingleChildScrollView(
+                child: Padding(
+                  padding: EdgeInsets.all(16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    spacing: 30,
+                    children: [
+                      Container(
+                        margin: EdgeInsets.only(top: 50, bottom: 30),
+                        child: CustomText.center(
+                          " Coucou mon coeur ",
+                          Theme.of(context).textTheme.headlineMedium,
+                        ),
+                      ),
+              
+                      ElevatedButton(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => DailyMessage()),
+                          );
+                        },
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text("Message du jour"),
+                            SizedBox(width: 15),
+                            Icon(
+                              Icons.favorite,
+                              size: 50,
+                              color: getColor(selectedColor),
+                            ),
+                          ],
+                        ),
+                      ),
+                      ElevatedButton(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => MeetingAzadel(),
+                            ),
+                          );
+                        },
+                        child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Flexible(
+                              child: Text(
+                                "Rendez-vous de la semaine de bébé d'amour",
+                                textAlign: TextAlign.center,
+                              ),
+                            ),
+                            if (menuDuJour.rendezVousAzadel != "")
+                              Padding(
+                                padding: EdgeInsets.only(left: 8),
+                                child: Icon(
+                                  Icons.notification_important_rounded,
+                                  color: Colors.red,
+                                ),
+                              )
+                          ],
+                        ),
+                     
+                            
+                      ),
+              
+                      ElevatedButton(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => RdvAlerwann()),
+                          );
+                        },
+                       child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Flexible(
+                              child: Text(
+                                "Rendez-vous de la semaine de bébé d'ange",
+                                textAlign: TextAlign.center,
+                              ),
+                            ),
+                            if (menuDuJour.rendezVousAzadel != "")
+                              Padding(
+                                padding: EdgeInsets.only(left: 8),
+                                child: Icon(
+                                  Icons.notification_important_rounded,
+                                  color: Colors.red,
+                                ),
+                              ),
+                          ],
+                        ),
+                      ),
+                      ElevatedButton(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => WeekMenu()),
+                          );
+                        },
+                        child: Text("Menu de la semaine"),
+                      ),
+                    ],
                   ),
-                  ElevatedButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => WeekMenu()),
-                      );
-                    },
-                    child: Text("Menu de la semaine"),
-                  ),
-                ],
-              ),
-            ),
+                ),
+              );
+            }
           ),
         );
       },

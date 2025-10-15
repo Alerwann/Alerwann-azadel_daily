@@ -1,4 +1,3 @@
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
@@ -7,7 +6,6 @@ Future<void> changeColor(String color) async {
     'selectedColor': color,
   });
 }
-
 
 MaterialColor getColor(String colorName) {
   switch (colorName) {
@@ -19,6 +17,8 @@ MaterialColor getColor(String colorName) {
       return Colors.green;
     case 'yellow':
       return Colors.yellow;
+    case 'grey':
+      return Colors.grey;
     default:
       return Colors.grey;
   }
