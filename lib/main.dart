@@ -1,3 +1,4 @@
+import 'package:azadel_daily/firebase_options.dart';
 import 'package:azadel_daily/models/menu_model.dart';
 import 'package:azadel_daily/pages/daily_message.dart';
 
@@ -12,11 +13,16 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'service/notification_service.dart'; 
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
-  ChangeNotifierProvider(create: (context) => MenuProvider());
+
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  
+    NotificationService notificationService = NotificationService();
+  await notificationService.initialize();
+
   runApp(
     ChangeNotifierProvider(
       create: (context) => MenuProvider(),
@@ -83,8 +89,7 @@ class _DailyMessageAzadelState extends State<DailyMessageAzadel> {
           ),
           body: Consumer<MenuProvider>(
             builder: (context, menuP, child) {
-
-                   MenuDuJour? menuDuJour = menuP.menuPourAujourdhui();
+              MenuDuJour? menuDuJour = menuP.menuPourAujourdhui();
               if (menuDuJour == null) {
                 return Center(child: Text("Aucun menu pour aujourd'hui"));
               }
@@ -103,12 +108,14 @@ class _DailyMessageAzadelState extends State<DailyMessageAzadel> {
                           Theme.of(context).textTheme.headlineMedium,
                         ),
                       ),
-              
+
                       ElevatedButton(
                         onPressed: () {
                           Navigator.push(
                             context,
-                            MaterialPageRoute(builder: (context) => DailyMessage()),
+                            MaterialPageRoute(
+                              builder: (context) => DailyMessage(),
+                            ),
                           );
                         },
                         child: Row(
@@ -134,7 +141,7 @@ class _DailyMessageAzadelState extends State<DailyMessageAzadel> {
                           );
                         },
                         child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Flexible(
                               child: Text(
@@ -149,21 +156,21 @@ class _DailyMessageAzadelState extends State<DailyMessageAzadel> {
                                   Icons.notification_important_rounded,
                                   color: Colors.red,
                                 ),
-                              )
+                              ),
                           ],
                         ),
-                     
-                            
                       ),
-              
+
                       ElevatedButton(
                         onPressed: () {
                           Navigator.push(
                             context,
-                            MaterialPageRoute(builder: (context) => RdvAlerwann()),
+                            MaterialPageRoute(
+                              builder: (context) => RdvAlerwann(),
+                            ),
                           );
                         },
-                       child: Row(
+                        child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Flexible(
@@ -172,7 +179,7 @@ class _DailyMessageAzadelState extends State<DailyMessageAzadel> {
                                 textAlign: TextAlign.center,
                               ),
                             ),
-                            if (menuDuJour.rendezVousAzadel != "")
+                            if (menuDuJour.rendezVousAlerwann != "")
                               Padding(
                                 padding: EdgeInsets.only(left: 8),
                                 child: Icon(
@@ -196,7 +203,7 @@ class _DailyMessageAzadelState extends State<DailyMessageAzadel> {
                   ),
                 ),
               );
-            }
+            },
           ),
         );
       },
