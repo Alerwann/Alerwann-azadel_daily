@@ -7,10 +7,10 @@ void createNewTopic(String achat, String content) async {
     'course': achat,
   
     'createdAt': FieldValue.serverTimestamp(),
-    'replyCount': 0,
+
   });
 
-  // 2. Créer le premier post (le message initial)
+
   await FirebaseFirestore.instance.collection('posts').add({
     'topicId': topicRef.id,
 

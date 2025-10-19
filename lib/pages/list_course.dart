@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'post_list.dart';
+
 
 class TopicListScreen extends StatelessWidget {
- 
   final _titleController = TextEditingController();
 
   TopicListScreen({super.key});
@@ -14,7 +13,6 @@ class TopicListScreen extends StatelessWidget {
     await FirebaseFirestore.instance.collection('topics').add({
       'title': _titleController.text.trim(),
       'createdAt': FieldValue.serverTimestamp(),
-      'replyCount': 0,
     });
 
     _titleController.clear();
@@ -24,7 +22,7 @@ class TopicListScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Forum")),
+      appBar: AppBar(title: Text("Liste de course")),
       body: StreamBuilder<QuerySnapshot>(
         stream: FirebaseFirestore.instance
             .collection('topics')
@@ -35,21 +33,32 @@ class TopicListScreen extends StatelessWidget {
             return Center(child: CircularProgressIndicator());
           }
           final topics = snapshot.data!.docs;
-          return ListView.builder(
-            itemCount: topics.length,
-            itemBuilder: (context, index) {
-              var topic = topics[index];
-              return ListTile(
-                title: Text(topic['title']),
-                subtitle: Text("${topic['replyCount']} réponses"),
-                onTap: () => Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => PostListScreen(topicId: topic.id),
-                  ),
+          return Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                "Ce qui manque cette semaine",
+                style: TextStyle(fontSize: 30),
+                textAlign: TextAlign.center,
+              ),
+              SizedBox(height: 60),
+              Expanded(
+                child: ListView.builder(
+                  itemCount: topics.length,
+                  itemBuilder: (context, index) {
+                    var topic = topics[index];
+                    return ListTile(
+                      title: Text(
+                        topic['title'],
+                        textAlign: TextAlign.center,
+                        style: TextStyle(fontSize: 20),
+                      ),
+
+                    );
+                  },
                 ),
-              );
-            },
+              ),
+            ],
           );
         },
       ),

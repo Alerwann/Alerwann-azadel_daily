@@ -3,6 +3,7 @@ import 'package:azadel_daily/models/menu_model.dart';
 import 'package:azadel_daily/providers/menu_provider.dart';
 import 'package:azadel_daily/utilis/change_color.dart';
 import 'package:azadel_daily/widget/custom_text.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -21,107 +22,126 @@ class _DailyMessageState extends State<DailyMessage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text("Coucou bébé  💕", style: headL)),
-      body: Consumer<MenuProvider>(
-        builder: (context, menuP, child) {
-          MenuDuJour? menuDuJour = menuP.menuPourAujourdhui();
-          if (menuDuJour == null) {
-            return Center(child: Text("Aucun menu pour aujourd'hui"));
-          }
+    return StreamBuilder(
+      stream: FirebaseFirestore.instance
+          .collection('appState')
+          .doc('hearts')
+          .snapshots(),
+      builder: (context, snapshot) {
+        if (!snapshot.hasData) {
+          return Center(child: CircularProgressIndicator());
+        }
 
-          return SingleChildScrollView(
-            child: Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                spacing: 15,
-                children: [
-                  SizedBox(height: 10),
-                  _listMessage("🥰 On est : ", menuDuJour.jour, headM),
-                  _listMessage(
-                    "À midi on mange 🍛 ",
-                    menuDuJour.menuMidi,
-                    headM,
-                  ),
-                  _listMessage(
-                    "Ce soir on mange 🧆 ",
-                    menuDuJour.menuSoir,
-                    headM,
-                  ),
-                  menuDuJour.rendezVousAzadel != ""
-                      ? _listMessage(
-                          "Tu dois faire   ",
-                          menuDuJour.rendezVousAzadel,
-                          headM,
-                        )
-                      : _listMessage(
-                          "Tu dois faire   ",
-                          "Rien à faire et tant mieux",
-                          headM,
-                        ),
-
-                  menuDuJour.rendezVousAlerwann != ""
-                      ? _listMessage(
-                          "Je dois faire  ",
-                          menuDuJour.rendezVousAlerwann,
-                          headS,
-                        )
-                      : _listMessage(
-                          "Je dois faire   ",
-                          "Rien à faire et tant mieux",
-                          headS,
-                        ),
-                  SizedBox(height: 10),
-
-                  _listMessage(
-                    "Et surtout n'oublie pas   ",
-                    menuDuJour.messageDoux,
-                    headL,
-                  ),
-
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        String selectedColor = snapshot.data!.get('selectedColor');
+        return Scaffold(
+          appBar: AppBar(title: Row(
+            children: [
+              Text("Coucou bébé ", style: headL),
+               Icon(Icons.favorite, size: 50, color: getColor(selectedColor)),
+            ],
+          )
+        ),
+          body: Consumer<MenuProvider>(
+            builder: (context, menuP, child) {
+              MenuDuJour? menuDuJour = menuP.menuPourAujourdhui();
+              if (menuDuJour == null) {
+                return Center(child: Text("Aucun menu pour aujourd'hui"));
+              }
+        
+              return SingleChildScrollView(
+                child: Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    spacing: 15,
                     children: [
-                      // Bouton rouge
-                      IconButton(
-                        icon: Icon(Icons.favorite, size: 50),
-                        color: Colors.red,
-                        onPressed: () {
-                          changeColor('red');
-                        },
+                      SizedBox(height: 10),
+                      _listMessage("🥰 On est : ", menuDuJour.jour, headM),
+                      _listMessage(
+                        "À midi on mange 🍛 ",
+                        menuDuJour.menuMidi,
+                        headM,
                       ),
-                      // Bouton bleu
-                      IconButton(
-                        icon: Icon(Icons.favorite, size: 50),
-                        color: Colors.blue,
-                        onPressed: () {
-                          changeColor('blue');
-                        },
+                      _listMessage(
+                        "Ce soir on mange 🧆 ",
+                        menuDuJour.menuSoir,
+                        headM,
                       ),
-                      // Bouton vert
-                      IconButton(
-                        icon: Icon(Icons.favorite, size: 50),
-                        color: Colors.green,
-                        onPressed: () {
-                          changeColor('green');
-                        },
+                      menuDuJour.rendezVousAzadel != ""
+                          ? _listMessage(
+                              "Tu dois faire   ",
+                              menuDuJour.rendezVousAzadel,
+                              headM,
+                            )
+                          : _listMessage(
+                              "Tu dois faire   ",
+                              "Rien à faire et tant mieux",
+                              headM,
+                            ),
+        
+                      menuDuJour.rendezVousAlerwann != ""
+                          ? _listMessage(
+                              "Je dois faire  ",
+                              menuDuJour.rendezVousAlerwann,
+                              headS,
+                            )
+                          : _listMessage(
+                              "Je dois faire   ",
+                              "Rien à faire et tant mieux",
+                              headS,
+                            ),
+                      SizedBox(height: 10),
+        
+                      _listMessage(
+                        "Et surtout n'oublie pas   ",
+                        menuDuJour.messageDoux,
+                        headL,
                       ),
-                      // Bouton jaune
-                      IconButton(
-                        icon: Icon(Icons.favorite, size: 50),
-                        color: Colors.yellow,
-                        onPressed: () {
-                          changeColor('yellow');
-                        },
+        
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          // Bouton rouge
+                          IconButton(
+                            icon: Icon(Icons.favorite, size: 50),
+                            color: Colors.red,
+                            onPressed: () {
+                              changeColor('red');
+                            },
+                          ),
+                          // Bouton bleu
+                          IconButton(
+                            icon: Icon(Icons.favorite, size: 50),
+                            color: Colors.blue,
+                            onPressed: () {
+                              changeColor('blue');
+                            },
+                          ),
+                          // Bouton vert
+                          IconButton(
+                            icon: Icon(Icons.favorite, size: 50),
+                            color: Colors.green,
+                            onPressed: () {
+                              changeColor('green');
+                            },
+                          ),
+                          // Bouton jaune
+                          IconButton(
+                            icon: Icon(Icons.favorite, size: 50),
+                            color: Colors.yellow,
+                            onPressed: () {
+                              changeColor('yellow');
+                            },
+                          ),
+                        ],
                       ),
                     ],
                   ),
-                ],
-              ),
-            ),
-          );
-        },
-      ),
+                ),
+              );
+            },
+          ),
+        );
+      }
     );
   }
 
