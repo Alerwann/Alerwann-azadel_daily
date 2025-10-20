@@ -1,7 +1,10 @@
-const {onSchedule} = require("firebase-functions/v2/scheduler");
-const {onDocumentUpdated} = require("firebase-functions/v2/firestore");
+const { onSchedule } = require("firebase-functions/v2/scheduler");
+const {
+  onDocumentUpdated,
+  onDocumentCreated,
+  onDocumentDeleted,
+} = require("firebase-functions/v2/firestore");
 const admin = require("firebase-admin");
-
 admin.initializeApp();
 
 // Fonction qui se déclenche tous les jours à 5h du matin (heure de Paris)
@@ -36,7 +39,7 @@ exports.notifyHeartChange = onDocumentUpdated(
       const newColor = afterData.selectedColor;
 
       // Si la couleur n'a pas changé, on arrête
-      if (oldColor === newColor) {
+      if (oldColor === newColor || newColor == "grey") {
         console.log("Couleur identique, pas de notification");
         return;
       }
@@ -78,7 +81,6 @@ exports.notifyHeartChange = onDocumentUpdated(
   }
 );
 
-// Fonction helper pour afficher le nom de la couleur en français
 function getColorName(color) {
   switch (color) {
     case "red":
@@ -95,3 +97,71 @@ function getColorName(color) {
       return color;
   }
 }
+exports.onTopicCreated = onDocumentCreated(
+  "topics/{topicId}",
+  async (event) => {
+    const newTopic = event.data.data();
+    const topicTitle = newTopic.title;
+
+    console.log("Nouveau topic créé:", topicTitle);
+    const tokensSnapshot = await admin
+      .firestore()
+      .collection("deviceTokens")
+      .get();
+
+    const tokens = tokensSnapshot.docs.map((doc) => doc.data().token);
+
+    if (tokens.length === 0) {
+      console.log("Aucun appareil enregistré");
+      return;
+    }
+
+    const message = {
+      notification: {
+        title: "🛒 Nouvelle course ajoutée",
+        body: `${topicTitle} a été ajouté à la liste`,
+      },
+      tokens: tokens,
+    };
+
+    try {
+      const response = await admin.messaging().sendEachForMulticast(message);
+      console.log("✅ Envoyé:", response.successCount);
+    } catch (error) {
+      console.error("Erreur:", error);
+    }
+  }
+);
+
+exports.onTopicDeleted = onDocumentDeleted(
+  "topics/{topicId}",
+  async (event) => {
+    const deletedTopic = event.data.data();
+    const topicTitle = deletedTopic.title;
+    console.log("Topic supprimé:", topicTitle);
+    // Même logique que onCreate
+    const tokensSnapshot = await admin
+      .firestore()
+      .collection("deviceTokens")
+      .get();
+
+    const tokens = tokensSnapshot.docs.map((doc) => doc.data().token);
+
+    if (tokens.length === 0) return;
+
+    const message = {
+      notification: {
+        title: "🗑️ Course supprimée",
+        body: `${topicTitle} a été retiré de la liste`,
+      },
+      tokens: tokens,
+    };
+
+    try {
+      const response = await admin.messaging().sendEachForMulticast(message);
+      console.log("✅ Envoyé:", response.successCount);
+    } catch (error) {
+      console.error("Erreur:", error);
+    }
+  }
+);
