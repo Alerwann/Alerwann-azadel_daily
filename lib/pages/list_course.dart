@@ -1,11 +1,16 @@
+import 'package:azadel_daily/utilis/liste_course_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+class TopicListScreen extends StatefulWidget {
+  const TopicListScreen({super.key});
 
-class TopicListScreen extends StatelessWidget {
+  @override
+  State<TopicListScreen> createState() => _TopicListScreenState();
+}
+
+class _TopicListScreenState extends State<TopicListScreen> {
   final _titleController = TextEditingController();
-
-  TopicListScreen({super.key});
 
   void _createTopic(BuildContext context) async {
     if (_titleController.text.trim().isEmpty) return;
@@ -14,10 +19,12 @@ class TopicListScreen extends StatelessWidget {
       'title': _titleController.text.trim(),
       'createdAt': FieldValue.serverTimestamp(),
     });
-
+    if (!context.mounted) return;
     _titleController.clear();
-    Navigator.of(context).pop(); // ferme le dialogue
+    Navigator.of(context).pop();
   }
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -53,7 +60,32 @@ class TopicListScreen extends StatelessWidget {
                         textAlign: TextAlign.center,
                         style: TextStyle(fontSize: 20),
                       ),
-
+                      trailing: IconButton(
+                        icon: Icon(Icons.delete),
+                        onPressed: () {
+                         
+                            showDialog(
+                              context: context,
+                              builder: (context) => AlertDialog(
+                                title: Text('Supprimer " ${topic['title']} "?'),
+                                actions: [
+                                  TextButton(
+                                    onPressed: Navigator.of(context).pop,
+                                    child: Text('Non'),
+                                  ),
+                                  TextButton(
+                                    onPressed: () {
+                                      ListeCourseUtils.deleteTopic(context, topic.id);
+                                   
+                                    },
+                                    child: Text('Oui'),
+                                  ),
+                                ],
+                              ),
+                            );
+                       
+                        },
+                      ),
                     );
                   },
                 ),
