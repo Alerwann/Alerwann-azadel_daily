@@ -21,8 +21,8 @@ class NotificationService {
     print('🔴 Badge: ${settings.badge}');
 
     // Attendre un peu
-    print('⏳ Attente de 5 secondes...');
-    await Future.delayed(Duration(seconds: 5));
+    // print('⏳ Attente de 5 secondes...');
+    // await Future.delayed(Duration(seconds: 2));
 
     // Vérifier le token APNS
     print('🍎 Vérification token APNS...');

@@ -1,6 +1,7 @@
 import 'package:azadel_daily/firebase_options.dart';
 import 'package:azadel_daily/models/menu_model.dart';
 import 'package:azadel_daily/pages/daily_message.dart';
+import 'package:azadel_daily/pages/list_course.dart';
 
 import 'package:azadel_daily/pages/meeting_alerwann.dart';
 import 'package:azadel_daily/pages/meeting_azadel.dart';
@@ -198,6 +199,21 @@ class _DailyMessageAzadelState extends State<DailyMessageAzadel> {
                           );
                         },
                         child: Text("Menu de la semaine"),
+                      ),
+                             ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                 backgroundColor:Theme.of(context).colorScheme.secondary,
+                                 foregroundColor: Colors.black,
+                              ),
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => TopicListScreen(),
+                            ),
+                          );
+                        },
+                        child: Text("Ajouter des courses"),
                       ),
                     ],
                   ),

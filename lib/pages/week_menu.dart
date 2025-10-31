@@ -1,4 +1,4 @@
-import 'package:azadel_daily/pages/list_course.dart';
+
 import 'package:azadel_daily/providers/menu_provider.dart';
 import 'package:azadel_daily/widget/custom_text.dart';
 import 'package:flutter/material.dart';
@@ -22,15 +22,7 @@ class _WeekMenuState extends State<WeekMenu> {
             spacing: 15,
             
             children: [
-                    ElevatedButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => TopicListScreen()),
-                  );
-                },
-                child:Text("Ajouter des courses"),
-              ),
+             
               Expanded(
                 child: ListView.builder(
                   itemCount: 7,
