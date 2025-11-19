@@ -99,10 +99,10 @@ class _TopicListScreenState extends State<TopicListScreen> {
           showDialog(
             context: context,
             builder: (ctx) => AlertDialog(
-              title: Text("Nouveau sujet"),
+              title: Text("Quel Ajout ?"),
               content: TextField(
                 controller: _titleController,
-                decoration: InputDecoration(hintText: "Titre du sujet"),
+                decoration: InputDecoration(hintText: "Nom de l'article"),
               ),
               actions: [
                 TextButton(
