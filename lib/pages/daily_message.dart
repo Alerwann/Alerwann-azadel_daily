@@ -1,3 +1,5 @@
+import 'package:azadel_daily/bloc/weather_bloc.dart';
+import 'package:azadel_daily/bloc/weather_state.dart';
 import 'package:azadel_daily/models/menu_model.dart';
 
 import 'package:azadel_daily/providers/menu_provider.dart';
@@ -5,6 +7,7 @@ import 'package:azadel_daily/utilis/change_color.dart';
 import 'package:azadel_daily/widget/custom_text.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 
 class DailyMessage extends StatefulWidget {
@@ -34,20 +37,21 @@ class _DailyMessageState extends State<DailyMessage> {
 
         String selectedColor = snapshot.data!.get('selectedColor');
         return Scaffold(
-          appBar: AppBar(title: Row(
-            children: [
-              Text("Coucou bébé ", style: headL),
-               Icon(Icons.favorite, size: 50, color: getColor(selectedColor)),
-            ],
-          )
-        ),
+          appBar: AppBar(
+            title: Row(
+              children: [
+                Text("Coucou bébé ", style: headL),
+                Icon(Icons.favorite, size: 50, color: getColor(selectedColor)),
+              ],
+            ),
+          ),
           body: Consumer<MenuProvider>(
             builder: (context, menuP, child) {
               MenuDuJour? menuDuJour = menuP.menuPourAujourdhui();
               if (menuDuJour == null) {
                 return Center(child: Text("Aucun menu pour aujourd'hui"));
               }
-        
+
               return SingleChildScrollView(
                 child: Center(
                   child: Column(
@@ -56,6 +60,20 @@ class _DailyMessageState extends State<DailyMessage> {
                     children: [
                       SizedBox(height: 10),
                       _listMessage("🥰 On est : ", menuDuJour.jour, headM),
+                      BlocBuilder<WeatherBloc, WeatherState>(
+                        builder: (context, state) {
+                          if (state is WeatherLoaded) {
+                            // C'est ici que tu affiches ta météo (ex: dans un _listMessage)
+                            return _listMessage(
+                              "Météo du jour ☀️",
+                              "${state.weather.temperature}°C - ${state.weather.sunny}",
+                              headM,
+                            );
+                          }
+                          // Pour Loading, Initial, Error... on n'affiche rien (ou un petit truc discret)
+                          return SizedBox.shrink();
+                        },
+                      ),
                       _listMessage(
                         "À midi on mange 🍛 ",
                         menuDuJour.menuMidi,
@@ -77,7 +95,7 @@ class _DailyMessageState extends State<DailyMessage> {
                               "Rien à faire et tant mieux",
                               headM,
                             ),
-        
+
                       menuDuJour.rendezVousAlerwann != ""
                           ? _listMessage(
                               "Je dois faire  ",
@@ -90,13 +108,13 @@ class _DailyMessageState extends State<DailyMessage> {
                               headS,
                             ),
                       SizedBox(height: 10),
-        
+
                       _listMessage(
                         "Et surtout n'oublie pas   ",
                         menuDuJour.messageDoux,
                         headL,
                       ),
-        
+
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
@@ -141,7 +159,7 @@ class _DailyMessageState extends State<DailyMessage> {
             },
           ),
         );
-      }
+      },
     );
   }
 

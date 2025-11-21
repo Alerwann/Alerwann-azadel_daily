@@ -11,20 +11,36 @@ class TopicListScreen extends StatefulWidget {
 
 class _TopicListScreenState extends State<TopicListScreen> {
   final _titleController = TextEditingController();
+  List<String> temporairCourse = [];
+  bool listAugment = false;
 
   void _createTopic(BuildContext context) async {
-    if (_titleController.text.trim().isEmpty) return;
+    if (temporairCourse.isEmpty) return;
 
-    await FirebaseFirestore.instance.collection('topics').add({
-      'title': _titleController.text.trim(),
-      'createdAt': FieldValue.serverTimestamp(),
-    });
+    print("=== DÉBUT ENVOI ===");
+    print("Nombre d'articles : ${temporairCourse.length}");
+
+    for (int i = 0; i < temporairCourse.length; i++) {
+      bool estLeDernier = (i == temporairCourse.length - 1);
+
+      print(
+        "Article $i : ${temporairCourse[i]} - Dernier: $estLeDernier - Silent: ${!estLeDernier}",
+      );
+
+      await FirebaseFirestore.instance.collection('topics').add({
+        'title': temporairCourse[i].trim(),
+        'createdAt': FieldValue.serverTimestamp(),
+        'silent': !estLeDernier,
+      });
+    }
+
+    print("=== FIN ENVOI ===");
+
     if (!context.mounted) return;
     _titleController.clear();
+    temporairCourse.clear();
     Navigator.of(context).pop();
   }
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -48,6 +64,12 @@ class _TopicListScreenState extends State<TopicListScreen> {
                 style: TextStyle(fontSize: 30),
                 textAlign: TextAlign.center,
               ),
+              ElevatedButton(
+                onPressed: () {
+                  ListeCourseUtils.deleteMultiTopic(context, topics);
+                },
+                child: Text("Réinitaliser la liste"),
+              ),
               SizedBox(height: 60),
               Expanded(
                 child: ListView.builder(
@@ -63,27 +85,27 @@ class _TopicListScreenState extends State<TopicListScreen> {
                       trailing: IconButton(
                         icon: Icon(Icons.delete),
                         onPressed: () {
-                         
-                            showDialog(
-                              context: context,
-                              builder: (context) => AlertDialog(
-                                title: Text('Supprimer " ${topic['title']} "?'),
-                                actions: [
-                                  TextButton(
-                                    onPressed: Navigator.of(context).pop,
-                                    child: Text('Non'),
-                                  ),
-                                  TextButton(
-                                    onPressed: () {
-                                      ListeCourseUtils.deleteTopic(context, topic.id);
-                                   
-                                    },
-                                    child: Text('Oui'),
-                                  ),
-                                ],
-                              ),
-                            );
-                       
+                          showDialog(
+                            context: context,
+                            builder: (context) => AlertDialog(
+                              title: Text('Supprimer " ${topic['title']} "?'),
+                              actions: [
+                                TextButton(
+                                  onPressed: Navigator.of(context).pop,
+                                  child: Text('Non'),
+                                ),
+                                TextButton(
+                                  onPressed: () {
+                                    ListeCourseUtils.deleteOneTopic(
+                                      context,
+                                      topic.id,
+                                    );
+                                  },
+                                  child: Text('Oui'),
+                                ),
+                              ],
+                            ),
+                          );
                         },
                       ),
                     );
@@ -106,12 +128,36 @@ class _TopicListScreenState extends State<TopicListScreen> {
               ),
               actions: [
                 TextButton(
-                  onPressed: () => Navigator.of(ctx).pop(),
+                  onPressed: () => {
+                    temporairCourse = [],
+                    print(temporairCourse),
+                    Navigator.of(ctx).pop(),
+                  },
                   child: Text("Annuler"),
                 ),
                 ElevatedButton(
-                  onPressed: () => _createTopic(ctx),
-                  child: Text("Créer"),
+                  onPressed: () {
+                    if (_titleController.text.trim().isEmpty) return;
+                    setState(() {
+                      temporairCourse.add(_titleController.text);
+                      _titleController.text = "";
+                      listAugment = true;
+                      print(temporairCourse);
+                    });
+                  },
+                  child: Text("Ajouter"),
+                ),
+
+                ElevatedButton(
+                  onPressed: () => {
+                    if (_titleController.text != "")
+                      {temporairCourse.add(_titleController.text)},
+                    _createTopic(ctx),
+                    setState(() {
+                      listAugment = false;
+                    }),
+                  },
+                  child: Text("Valider"),
                 ),
               ],
             ),

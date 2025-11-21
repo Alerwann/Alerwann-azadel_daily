@@ -1,3 +1,6 @@
+import 'package:azadel_daily/bloc/weather_bloc.dart';
+import 'package:azadel_daily/bloc/weather_event.dart';
+import 'package:azadel_daily/data/weather_repository.dart';
 import 'package:azadel_daily/firebase_options.dart';
 import 'package:azadel_daily/models/menu_model.dart';
 import 'package:azadel_daily/pages/daily_message.dart';
@@ -12,21 +15,28 @@ import 'package:azadel_daily/utilis/change_color.dart';
 import 'package:azadel_daily/widget/custom_text.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'service/notification_service.dart'; 
+import 'service/notification_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-  
-    NotificationService notificationService = NotificationService();
+
+  NotificationService notificationService = NotificationService();
   await notificationService.initialize();
 
   runApp(
-    ChangeNotifierProvider(
-      create: (context) => MenuProvider(),
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (context) => MenuProvider()),
+        BlocProvider(
+          create: (context) =>
+              WeatherBloc(WeatherRepository())..add(GetWeatherByGps())),
+        
+      ],
       child: const MyApp(),
     ),
   );
@@ -200,11 +210,13 @@ class _DailyMessageAzadelState extends State<DailyMessageAzadel> {
                         },
                         child: Text("Menu de la semaine"),
                       ),
-                             ElevatedButton(
-                              style: ElevatedButton.styleFrom(
-                                 backgroundColor:Theme.of(context).colorScheme.secondary,
-                                 foregroundColor: Colors.black,
-                              ),
+                      ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Theme.of(
+                            context,
+                          ).colorScheme.secondary,
+                          foregroundColor: Colors.black,
+                        ),
                         onPressed: () {
                           Navigator.push(
                             context,

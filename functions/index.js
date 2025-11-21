@@ -97,13 +97,19 @@ function getColorName(color) {
       return color;
   }
 }
+
 exports.onTopicCreated = onDocumentCreated(
   "topics/{topicId}",
   async (event) => {
     const newTopic = event.data.data();
     const topicTitle = newTopic.title;
 
-    console.log("Nouveau topic créé:", topicTitle);
+    if (newTopic.silent === true) {
+      console.log("☯️ Ajout silencieux, pas de notification");
+      return;
+    }
+
+    console.log("✅ Nouveau topic créé:", topicTitle);
     const tokensSnapshot = await admin
       .firestore()
       .collection("deviceTokens")
@@ -138,8 +144,13 @@ exports.onTopicDeleted = onDocumentDeleted(
   async (event) => {
     const deletedTopic = event.data.data();
     const topicTitle = deletedTopic.title;
+    
     console.log("Topic supprimé:", topicTitle);
-    // Même logique que onCreate
+    if (deletedTopic.silent === true) {
+      console.log("Suppression silencieuse, pas de notification");
+      return;
+    }
+
     const tokensSnapshot = await admin
       .firestore()
       .collection("deviceTokens")
