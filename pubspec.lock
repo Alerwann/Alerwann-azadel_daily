@@ -207,7 +207,7 @@ packages:
     source: sdk
     version: "0.0.0"
   flutter_bloc:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: flutter_bloc
       sha256: cf51747952201a455a1c840f8171d273be009b932c75093020f9af64f2123e38
@@ -241,7 +241,7 @@ packages:
     source: sdk
     version: "0.0.0"
   geolocator:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: geolocator
       sha256: f62bcd90459e63210bbf9c35deb6a51c521f992a78de19a1fe5c11704f9530e2
@@ -369,7 +369,7 @@ packages:
     source: hosted
     version: "0.11.1"
   matrix_waiting_screen:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: matrix_waiting_screen
       sha256: "00bf49883ef7ca468f121322f47478a385b8008d17087fda18583aa44f471598"
@@ -581,6 +581,13 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "15.0.2"
+  weather_package:
+    dependency: "direct main"
+    description:
+      path: "../weather_package"
+      relative: true
+    source: path
+    version: "0.0.1"
   web:
     dependency: transitive
     description:

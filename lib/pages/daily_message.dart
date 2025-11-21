@@ -1,7 +1,4 @@
-import 'package:azadel_daily/bloc/weather_bloc.dart';
-import 'package:azadel_daily/bloc/weather_state.dart';
 import 'package:azadel_daily/models/menu_model.dart';
-
 import 'package:azadel_daily/providers/menu_provider.dart';
 import 'package:azadel_daily/utilis/change_color.dart';
 import 'package:azadel_daily/widget/custom_text.dart';
@@ -9,6 +6,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
+import 'package:weather_package/bloc/weather_bloc.dart';
+import 'package:weather_package/bloc/weather_state.dart';
 
 class DailyMessage extends StatefulWidget {
   const DailyMessage({super.key});

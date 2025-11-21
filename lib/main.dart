@@ -1,6 +1,4 @@
-import 'package:azadel_daily/bloc/weather_bloc.dart';
-import 'package:azadel_daily/bloc/weather_event.dart';
-import 'package:azadel_daily/data/weather_repository.dart';
+
 import 'package:azadel_daily/firebase_options.dart';
 import 'package:azadel_daily/models/menu_model.dart';
 import 'package:azadel_daily/pages/daily_message.dart';
@@ -18,6 +16,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:weather_package/bloc/weather_bloc.dart';
+import 'package:weather_package/bloc/weather_event.dart';
+import 'package:weather_package/data/weather_repository.dart';
 import 'service/notification_service.dart';
 
 void main() async {
